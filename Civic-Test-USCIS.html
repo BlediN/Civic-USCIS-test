@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+        }
+
+        .question p {
+            font-weight: 600;
+            color: #007acc;
+        }
+
+        textarea {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        .answer {
+            margin-top: 10px;
+            color: #444;
+        }
+
+        button {
+            display: block;
+            margin: 30px auto 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        details {
+            margin-top: 40px;
+            background: #eef5fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        summary {
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            color: #34495e;
+        }
+
+        #allQA div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Quiz</h1>
+        <div id="quiz"></div>
+        <button onclick="submitAnswers()">Submit</button>
+
+        <details>
+            <summary>Show All Questions and Answers</summary>
+            <div id="allQA"></div>
+        </details>
+    </div>
+
+    <script>
+        const questionsAnswers = [
+            {
+                "number": 1,
+                "question": "What is the supreme law of the land?",
+                "answers": [
+                    "the Constitution"
+                ]
+            },
+            {
+                "number": 2,
+                "question": "What does the Constitution do?",
+                "answers": [
+                    "sets up the government \u25aa  defines the government  \u25aa  protects basic rights of Americans"
+                ]
+            },
+            {
+                "number": 3,
+                "question": "The idea of self-government is in the first three words of the Constitution.  What are these words?",
+                "answers": [
+                    "We the People"
+                ]
+            },
+            {
+                "number": 4,
+                "question": "What is an amendment?",
+                "answers": [
+                    "a change (to the Constitution) \u25aa  an addition (to the Constitution)"
+                ]
+            },
+            {
+                "number": 5,
+                "question": "What do we call the first ten amendments to the Constitution?",
+                "answers": [
+                    "the Bill of Rights"
+                ]
+            },
+            {
+                "number": 6,
+                "question": "What is one right or freedom from the First Amendment?*",
+                "answers": [
+                    "speech \u25aa  religion \u25aa  assembly \u25aa  press \u25aa  petition the government"
+                ]
+            },
+            {
+                "number": 7,
+                "question": "How many amendments does the Constitution have?",
+                "answers": [
+                    "twenty-seven (27)"
+                ]
+            },
+            {
+                "number": 8,
+                "question": "What did the Declaration of Independence do?",
+                "answers": [
+                    "announced our independence (from Great Britain) \u25aa  declared our independence (from Great Britain) \u25aa  said that the United States is free (from Great Britain)"
+                ]
+            },
+            {
+                "number": 9,
+                "question": "What are two rights in the Declaration of Independence?",
+                "answers": [
+                    "life \u25aa  liberty \u25aa  pursuit of happiness"
+                ]
+            },
+            {
+                "number": 10,
+                "question": "What is freedom of religion?",
+                "answers": [
+                    "You can practice any religion, or not practice a religion."
+                ]
+            },
+            {
+                "number": 11,
+                "question": "What is the economic system in the United States?*",
+                "answers": [
+                    "capitalist economy \u25aa  market economy"
+                ]
+            },
+            {
+                "number": 12,
+                "question": "What is the rule of law?",
+                "answers": [
+                    "Everyone must follow the law. \u25aa  Leaders must obey the law. \u25aa  Government must obey the law.  \u25aa  No one is above the law."
+                ]
+            },
+            {
+                "number": 13,
+                "question": "Name one branch or part of the government.*",
+                "answers": [
+                    "Congress \u25aa  legislative \u25aa  President \u25aa  executive \u25aa  the courts \u25aa  judicial"
+                ]
+            },
+            {
+                "number": 14,
+                "question": "What stops one branch of government from becoming too powerful?",
+                "answers": [
+                    "checks and balances \u25aa  separation of powers"
+                ]
+            },
+            {
+                "number": 15,
+                "question": "Who is in charge of the executive branch?",
+                "answers": [
+                    "the President"
+                ]
+            },
+            {
+                "number": 16,
+                "question": "Who makes federal laws?",
+                "answers": [
+                    "Congress \u25aa  Senate and House (of Representatives) \u25aa  (U.S. or national) legislature"
+                ]
+            },
+            {
+                "number": 17,
+                "question": "What are the two parts of the U.S. Congress?*",
+                "answers": [
+                    "the Senate and House (of Representatives)"
+                ]
+            },
+            {
+                "number": 18,
+                "question": "How many U.S. Senators are there?",
+                "answers": [
+                    "one hundred (100)"
+                ]
+            },
+            {
+                "number": 19,
+                "question": "We elect a U.S. Senator for how many years?",
+                "answers": [
+                    "six (6)"
+                ]
+            },
+            {
+                "number": 20,
+                "question": "Who is one of New York State U.S. Senators now?*",
+                "answers": [
+                    "Charles Schumer"
+                ]
+            },
+            {
+                "number": 21,
+                "question": "The House of Representatives has how many voting members?",
+                "answers": [
+                    "four hundred thirty-five (435)"
+                ]
+            },
+            {
+                "number": 22,
+                "question": "We elect a U.S. Representative for how many years?",
+                "answers": [
+                    "two (2)"
+                ]
+            },
+            {
+                "number": 23,
+                "question": "Name your U.S. Representative.",
+                "answers": [
+                    "Yvete D. Clarke"
+                ]
+            },
+            {
+                "number": 24,
+                "question": "Who does a U.S. Senator represent?",
+                "answers": [
+                    "all people of the state"
+                ]
+            },
+            {
+                "number": 25,
+                "question": "Why do some states have more Representatives than other states?",
+                "answers": [
+                    "(because of) the states population \u25aa  (because) they have more people \u25aa  (because) some states have more people"
+                ]
+            },
+            {
+                "number": 26,
+                "question": "We elect a President for how many years?",
+                "answers": [
+                    "four (4)"
+                ]
+            },
+            {
+                "number": 27,
+                "question": "In what month do we vote for President?*",
+                "answers": [
+                    "November"
+                ]
+            },
+            {
+                "number": 28,
+                "question": "What is the name of the President of the United States now?*",
+                "answers": [
+                    "Donald J. Trump"
+                ]
+            },
+            {
+                "number": 29,
+                "question": "What is the name of the Vice President of the United States now?",
+                "answers": [
+                    "JD. Vance"
+                ]
+            },
+            {
+                "number": 30,
+                "question": "If the President can no longer serve, who becomes President?",
+                "answers": [
+                    "the Vice President"
+                ]
+            },
+            {
+                "number": 31,
+                "question": "If both the President and the Vice President can no longer serve, who becomes President?",
+                "answers": [
+                    "the Speaker of the House"
+                ]
+            },
+            {
+                "number": 32,
+                "question": "Who is the Commander in Chief of the military?",
+                "answers": [
+                    "the President"
+                ]
+            },
+            {
+                "number": 33,
+                "question": "Who signs bills to become laws?",
+                "answers": [
+                    "the President"
+                ]
+            },
+            {
+                "number": 34,
+                "question": "Who vetoes bills?",
+                "answers": [
+                    "the President"
+                ]
+            },
+            {
+                "number": 35,
+                "question": "What does the Presidents Cabinet do?",
+                "answers": [
+                    "advises the President"
+                ]
+            },
+            {
+                "number": 36,
+                "question": "What are two Cabinet-level positions?",
+                "answers": [
+                    "Secretary of Agriculture \u25aa  Secretary of Commerce \u25aa  Secretary of Defense \u25aa  Secretary of Education \u25aa  Secretary of Energy \u25aa  Secretary of Health and Human Services \u25aa  Secretary of Homeland Security \u25aa  Secretary of Housing and Urban Development \u25aa  Secretary of the Interior \u25aa  Secretary of Labor \u25aa  Secretary of State \u25aa  Secretary of Transportation \u25aa  Secretary of the Treasury \u25aa  Secretary of Veterans Affairs \u25aa  Attorney General \u25aa  Vice President"
+                ]
+            },
+            {
+                "number": 37,
+                "question": "What does the judicial branch do?",
+                "answers": [
+                    "reviews laws \u25aa  explains laws \u25aa  resolves disputes (disagreements) \u25aa  decides if a law goes against the Constitution"
+                ]
+            },
+            {
+                "number": 38,
+                "question": "What is the highest court in the United States?",
+                "answers": [
+                    "the Supreme Court"
+                ]
+            },
+            {
+                "number": 39,
+                "question": "How many justices are on the Supreme Court?",
+                "answers": [
+                    "9 (nine)"
+                ]
+            },
+            {
+                "number": 40,
+                "question": "Who is the Chief Justice of the United States now?",
+                "answers": [
+                    "John Roberts"
+                ]
+            },
+            {
+                "number": 41,
+                "question": "Under our Constitution, some powers belong to the federal government.  What is one power of the federal government?",
+                "answers": [
+                    "to print money \u25aa  to declare war \u25aa  to create an army \u25aa  to make treaties"
+                ]
+            },
+            {
+                "number": 42,
+                "question": "Under our Constitution, some powers belong to the states.  What is one power of the states?",
+                "answers": [
+                    "provide schooling and education \u25aa  provide protection (police) \u25aa  provide safety (fire departments) \u25aa  give a drivers license \u25aa  approve zoning and land use"
+                ]
+            },
+            {
+                "number": 43,
+                "question": "Who is the Governor of your New York State now?",
+                "answers": [
+                    "Kathy Hochul"
+                ]
+            },
+            {
+                "number": 44,
+                "question": "What is the capital of New York State?*",
+                "answers": [
+                    "Albany"
+                ]
+            },
+            {
+                "number": 45,
+                "question": "What are the two major political parties in the United States?*",
+                "answers": [
+                    "Democratic and Republican"
+                ]
+            },
+            {
+                "number": 46,
+                "question": "What is the political party of the President now?",
+                "answers": [
+                    "Republican Party"
+                ]
+            },
+            {
+                "number": 47,
+                "question": "What is the name of the Speaker of the House of Representatives now?",
+                "answers": [
+                    "Mike Johnson"
+                ]
+            },
+            {
+                "number": 48,
+                "question": "There are four amendments to the Constitution about who can vote.  Describe one of them.",
+                "answers": [
+                    "Citizens eighteen (18) and older (can vote). \u25aa  You dont have to pay (a poll tax) to vote. \u25aa  Any citizen can vote.  (Women and men can vote.) \u25aa  A male citizen of any race (can vote)."
+                ]
+            },
+            {
+                "number": 49,
+                "question": "What is one responsibility that is only for United States citizens?*",
+                "answers": [
+                    "serve on a jury \u25aa  vote in a federal election"
+                ]
+            },
+            {
+                "number": 50,
+                "question": "Name one right only for United States citizens.",
+                "answers": [
+                    "vote in a federal election \u25aa  run for federal office"
+                ]
+            },
+            {
+                "number": 51,
+                "question": "What are two rights of everyone living in the United States?",
+                "answers": [
+                    "freedom of expression \u25aa  freedom of speech \u25aa  freedom of assembly \u25aa  freedom to petition the government \u25aa  freedom of religion \u25aa  the right to bear arms"
+                ]
+            },
+            {
+                "number": 52,
+                "question": "What do we show loyalty to when we say the Pledge of Allegiance?",
+                "answers": [
+                    "the United States \u25aa  the flag"
+                ]
+            },
+            {
+                "number": 53,
+                "question": "What is one promise you make when you become a United States citizen?",
+                "answers": [
+                    "give up loyalty to other countries  \u25aa  defend the Constitution and laws of the United States \u25aa  obey the laws of the United States \u25aa  serve in the U.S. military (if needed) \u25aa  serve (do important work for) the nation (if needed) \u25aa  be loyal to the United States"
+                ]
+            },
+            {
+                "number": 54,
+                "question": "How old do citizens have to be to vote for President?*",
+                "answers": [
+                    "eighteen (18) and older"
+                ]
+            },
+            {
+                "number": 55,
+                "question": "What are two ways that Americans can participate in their democracy?",
+                "answers": [
+                    "vote \u25aa  join a political party \u25aa  help with a campaign \u25aa  join a civic group \u25aa  join a community group \u25aa  give an elected official your opinion on an issue \u25aa  call Senators and Representatives \u25aa  publicly support or oppose an issue or policy \u25aa  run for office \u25aa  write to a newspaper"
+                ]
+            },
+            {
+                "number": 56,
+                "question": "When is the last day you can send in federal income tax forms?*",
+                "answers": [
+                    "April 15"
+                ]
+            },
+            {
+                "number": 57,
+                "question": "When must all men register for the Selective Service?",
+                "answers": [
+                    "at age eighteen (18) \u25aa  between eighteen (18) and twenty-six (26)"
+                ]
+            },
+            {
+                "number": 58,
+                "question": "What is one reason colonists came to America?",
+                "answers": [
+                    "freedom \u25aa  political liberty \u25aa  religious freedom \u25aa  economic opportunity \u25aa  practice their religion \u25aa  escape persecution"
+                ]
+            },
+            {
+                "number": 59,
+                "question": "Who lived in America before the Europeans arrived?",
+                "answers": [
+                    "American Indians \u25aa  Native Americans"
+                ]
+            },
+            {
+                "number": 60,
+                "question": "What group of people was taken to America and sold as slaves?",
+                "answers": [
+                    "Africans \u25aa  people from Africa"
+                ]
+            },
+            {
+                "number": 61,
+                "question": "Why did the colonists fight the British?",
+                "answers": [
+                    "because of high taxes (taxation without representation) \u25aa  because the British army stayed in their houses (boarding, quartering) \u25aa  because they didnt have self-government"
+                ]
+            },
+            {
+                "number": 62,
+                "question": "Who wrote the Declaration of Independence?",
+                "answers": [
+                    "(Thomas) Jefferson"
+                ]
+            },
+            {
+                "number": 63,
+                "question": "When was the Declaration of Independence adopted?",
+                "answers": [
+                    "July 4, 1776"
+                ]
+            },
+            {
+                "number": 64,
+                "question": "There were 13 original states.  Name three.",
+                "answers": [
+                    "New Hampshire \u25aa  Massachusetts  \u25aa  Rhode Island  \u25aa  Connecticut \u25aa  New York \u25aa  New Jersey  \u25aa  Pennsylvania \u25aa  Delaware \u25aa  Maryland  \u25aa  Virginia  \u25aa  North Carolina  \u25aa  South Carolina \u25aa  Georgia"
+                ]
+            },
+            {
+                "number": 65,
+                "question": "What happened at the Constitutional Convention?",
+                "answers": [
+                    "The Constitution was written. \u25aa  The Founding Fathers wrote the Constitution."
+                ]
+            },
+            {
+                "number": 66,
+                "question": "When was the Constitution written?",
+                "answers": [
+                    "1787"
+                ]
+            },
+            {
+                "number": 67,
+                "question": "The Federalist Papers supported the passage of the U.S. Constitution.  Name one of the writers.",
+                "answers": [
+                    "(James) Madison \u25aa  (Alexander) Hamilton \u25aa  (John) Jay \u25aa  Publius"
+                ]
+            },
+            {
+                "number": 68,
+                "question": "What is one thing Benjamin Franklin is famous for?",
+                "answers": [
+                    "U.S. diplomat \u25aa  oldest member of the Constitutional Convention \u25aa  first Postmaster General of the United States \u25aa  writer of Poor Richards Almanac \u25aa  started the first free libraries"
+                ]
+            },
+            {
+                "number": 69,
+                "question": "Who is the Father of Our Country?",
+                "answers": [
+                    "(George) Washington"
+                ]
+            },
+            {
+                "number": 70,
+                "question": "Who was the first President?*",
+                "answers": [
+                    "(George) Washington"
+                ]
+            },
+            {
+                "number": 71,
+                "question": "What territory did the United States buy from France in 1803?",
+                "answers": [
+                    "the Louisiana Territory \u25aa  Louisiana"
+                ]
+            },
+            {
+                "number": 72,
+                "question": "Name one war fought by the United States in the 1800s.",
+                "answers": [
+                    "War of 1812 \u25aa  Mexican-American War \u25aa  Civil War \u25aa  Spanish-American War"
+                ]
+            },
+            {
+                "number": 73,
+                "question": "Name the U.S. war between the North and the South.",
+                "answers": [
+                    "the Civil War \u25aa  the War between the States"
+                ]
+            },
+            {
+                "number": 74,
+                "question": "Name one problem that led to the Civil War.",
+                "answers": [
+                    "slavery \u25aa  economic reasons \u25aa  states rights"
+                ]
+            },
+            {
+                "number": 75,
+                "question": "What was one important thing that Abraham Lincoln did?*",
+                "answers": [
+                    "freed the slaves (Emancipation Proclamation) \u25aa  saved (or preserved) the Union \u25aa  led the United States during the Civil War"
+                ]
+            },
+            {
+                "number": 76,
+                "question": "What did the Emancipation Proclamation do?",
+                "answers": [
+                    "freed the slaves \u25aa  freed slaves in the Confederacy \u25aa  freed slaves in the Confederate states \u25aa  freed slaves in most Southern states"
+                ]
+            },
+            {
+                "number": 77,
+                "question": "What did Susan B. Anthony do?",
+                "answers": [
+                    "fought for womens rights \u25aa  fought for civil rights"
+                ]
+            },
+            {
+                "number": 78,
+                "question": "Name one war fought by the United States in the 1900s.*",
+                "answers": [
+                    "World War I  \u25aa  World War II \u25aa  Korean War \u25aa  Vietnam War \u25aa  (Persian) Gulf War"
+                ]
+            },
+            {
+                "number": 79,
+                "question": "Who was President during World War I?",
+                "answers": [
+                    "(Woodrow) Wilson"
+                ]
+            },
+            {
+                "number": 80,
+                "question": "Who was President during the Great Depression and World War II?",
+                "answers": [
+                    "(Franklin) Roosevelt"
+                ]
+            },
+            {
+                "number": 81,
+                "question": "Who did the United States fight in World War II?",
+                "answers": [
+                    "Japan, Germany, and Italy"
+                ]
+            },
+            {
+                "number": 82,
+                "question": "Before he was President, Eisenhower was a general.  What war was he in?",
+                "answers": [
+                    "World War II"
+                ]
+            },
+            {
+                "number": 83,
+                "question": "During the Cold War, what was the main concern of the United States?",
+                "answers": [
+                    "Communism"
+                ]
+            },
+            {
+                "number": 84,
+                "question": "What movement tried to end racial discrimination?",
+                "answers": [
+                    "civil rights (movement)"
+                ]
+            },
+            {
+                "number": 85,
+                "question": "What did Martin Luther King, Jr. do?*",
+                "answers": [
+                    "fought for civil rights \u25aa  worked for equality for all Americans"
+                ]
+            },
+            {
+                "number": 86,
+                "question": "What major event happened on September 11, 2001, in the United States?",
+                "answers": [
+                    "Terrorists attacked the United States."
+                ]
+            },
+            {
+                "number": 87,
+                "question": "Name one American Indian tribe in the United States. [USCIS Officers will be supplied with a list of federally recognized American Indian tribes.]",
+                "answers": [
+                    "Cherokee  \u25aa  Navajo \u25aa  Sioux \u25aa  Chippewa \u25aa  Choctaw \u25aa  Pueblo \u25aa  Apache \u25aa  Iroquois \u25aa  Creek \u25aa  Blackfeet \u25aa  Seminole \u25aa  Cheyenne \u25aa  Arawak \u25aa  Shawnee \u25aa  Mohegan \u25aa  Huron \u25aa  Oneida \u25aa  Lakota \u25aa  Crow \u25aa  Teton \u25aa  Hopi \u25aa  Inuit"
+                ]
+            },
+            {
+                "number": 88,
+                "question": "Name one of the two longest rivers in the United States.",
+                "answers": [
+                    "Missouri (River) \u25aa  Mississippi (River)"
+                ]
+            },
+            {
+                "number": 89,
+                "question": "What ocean is on the West Coast of the United States?",
+                "answers": [
+                    "Pacific (Ocean)"
+                ]
+            },
+            {
+                "number": 90,
+                "question": "What ocean is on the East Coast of the United States?",
+                "answers": [
+                    "Atlantic (Ocean)"
+                ]
+            },
+            {
+                "number": 91,
+                "question": "Name one U.S. territory.",
+                "answers": [
+                    "Puerto Rico \u25aa  U.S. Virgin Islands \u25aa  American Samoa \u25aa  Northern Mariana Islands \u25aa  Guam"
+                ]
+            },
+            {
+                "number": 92,
+                "question": "Name one state that borders Canada.",
+                "answers": [
+                    "Maine \u25aa  New Hampshire  \u25aa  Vermont \u25aa  New York \u25aa  Pennsylvania  \u25aa  Ohio \u25aa  Michigan \u25aa  Minnesota \u25aa  North Dakota \u25aa  Montana  \u25aa  Idaho  \u25aa  Washington \u25aa  Alaska"
+                ]
+            },
+            {
+                "number": 93,
+                "question": "Name one state that borders Mexico.",
+                "answers": [
+                    "California \u25aa  Arizona  \u25aa  New Mexico \u25aa  Texas"
+                ]
+            },
+            {
+                "number": 94,
+                "question": "What is the capital of the United States?*",
+                "answers": [
+                    "Washington, D.C."
+                ]
+            },
+            {
+                "number": 95,
+                "question": "Where is the Statue of Liberty?*",
+                "answers": [
+                    "New York (Harbor) \u25aa  Liberty Island [Also acceptable are New Jersey, near New York City, and on the Hudson (River).]"
+                ]
+            },
+            {
+                "number": 96,
+                "question": "Why does the flag have 13 stripes?",
+                "answers": [
+                    "because there were 13 original colonies \u25aa  because the stripes represent the original colonies"
+                ]
+            },
+            {
+                "number": 97,
+                "question": "Why does the flag have 50 stars?*",
+                "answers": [
+                    "because there is one star for each state \u25aa  because each star represents a state \u25aa  because there are 50 states"
+                ]
+            },
+            {
+                "number": 98,
+                "question": "What is the name of the national anthem?",
+                "answers": [
+                    "The Star-Spangled Banner"
+                ]
+            },
+            {
+                "number": 99,
+                "question": "When do we celebrate Independence Day?*",
+                "answers": [
+                    "July 4"
+                ]
+            },
+            {
+                "number": 100,
+                "question": "Name two national U.S. holidays.",
+                "answers": [
+                    "New Years Day \u25aa  Martin Luther King, Jr. Day \u25aa  Presidents Day \u25aa  Memorial Day \u25aa  Independence Day \u25aa  Labor Day \u25aa  Columbus Day \u25aa  Veterans Day \u25aa  Thanksgiving  \u25aa  Christmas"
+                ]
+            }
+        ];
+
+        let currentQuizQuestions = [];
+
+        function getQuestionsByRange(start, end) {
+            return questionsAnswers.filter(q => q.number >= start && q.number <= end);
+        }
+
+        function getRandomSubset(arr, count) {
+            const shuffled = [...arr].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function getStructuredRandomQuestions() {
+            return [
+                ...getRandomSubset(getQuestionsByRange(1, 12), 2),
+                ...getRandomSubset(getQuestionsByRange(13, 47), 6),
+                ...getRandomSubset(getQuestionsByRange(48, 57), 2),
+                ...getRandomSubset(getQuestionsByRange(58, 70), 3),
+                ...getRandomSubset(getQuestionsByRange(71, 77), 1),
+                ...getRandomSubset(getQuestionsByRange(78, 87), 3),
+                ...getRandomSubset(getQuestionsByRange(88, 95), 2),
+                ...getRandomSubset(getQuestionsByRange(96, 100), 1)
+            ];
+        }
+
+        function displayQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            currentQuizQuestions = getStructuredRandomQuestions();
+            quizContainer.innerHTML = '';
+            currentQuizQuestions.forEach((qa, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                <p style="color:blue">${index + 1}. (${qa.number}) ${qa.question}</p>
+                <textarea id="answer${index}" rows="3" cols="50" onkeydown="handleEnter(event, ${index})"></textarea>
+                <div id="correct${index}" class="answer" style="display:none;">
+                    <strong style="color:black">Correct Answer for #${qa.number}:</strong> ${qa.answers.join(', ')}
+                </div>`;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function handleEnter(event, currentIndex) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const next = document.getElementById(`answer${currentIndex + 1}`);
+                if (next) {
+                    next.focus();
+                }
+            }
+        }
+
+        function submitAnswers() {
+            currentQuizQuestions.forEach((qa, index) => {
+                const correctAnswerDiv = document.getElementById(`correct${index}`);
+                correctAnswerDiv.style.display = 'block';
+            });
+            displayAllQuestionsAndAnswers();
+        }
+
+        function displayAllQuestionsAndAnswers() {
+            const allQAContainer = document.getElementById('allQA');
+            allQAContainer.innerHTML = '';
+
+            const shuffledQuestions = [...questionsAnswers].sort(() => 0.5 - Math.random());
+
+            shuffledQuestions.forEach((qa) => {
+                const qaDiv = document.createElement('div');
+                qaDiv.style.marginBottom = '5vh';
+
+                qaDiv.innerHTML = `<strong style="color: darkgreen;">${qa.number}. ${qa.question}</strong><br>
+                           <details>
+                               <summary style="font-weight: bold; color: #007acc; cursor: pointer;">Show Answer</summary>
+                               <span style="color: Blue; font-weight: bold;">Answer: ${qa.answers.join(', ')}</span>
+                           </details>`;
+
+                allQAContainer.appendChild(qaDiv);
+            });
+        }
+
+        window.onload = displayQuiz;
+    </script>
+</body>
+
+<footer style="text-align:center; margin-top:40px; padding:10px; background-color:#eef5fa; border-radius:10px;">
+    <p>&copy; @BN</p>
+</footer>
+
+</html>
